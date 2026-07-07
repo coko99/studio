@@ -21,12 +21,13 @@ export const MENU_CATEGORY_ORDER = [
 ] as const;
 
 export function sortMenuCategories(categories: MenuCategory[]): MenuCategory[] {
-  const order = new Map<string, number>(
+  const order: Record<string, number> = Object.fromEntries(
     MENU_CATEGORY_ORDER.map((name, index) => [name, index])
   );
+
   return [...categories].sort((a, b) => {
-    const ai = order.get(a.name) ?? Number.MAX_SAFE_INTEGER;
-    const bi = order.get(b.name) ?? Number.MAX_SAFE_INTEGER;
+    const ai = order[a.name] ?? Number.MAX_SAFE_INTEGER;
+    const bi = order[b.name] ?? Number.MAX_SAFE_INTEGER;
     return ai - bi;
   });
 }
