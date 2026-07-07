@@ -418,3 +418,27 @@ body {
     transform: translateX(0);
   }
 }
+
+.gallery-flicker-item {
+  animation: gallery-flicker 2.6s ease-in-out infinite;
+}
+
+@keyframes gallery-flicker {
+  0%,
+  100% {
+    opacity: 0.12;
+    filter: grayscale(1) brightness(0.3);
+  }
+  50% {
+    opacity: 1;
+    filter: grayscale(1) brightness(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-flicker-item {
+    animation: none;
+    opacity: 1;
+    filter: grayscale(1) brightness(0.85);
+  }
+}

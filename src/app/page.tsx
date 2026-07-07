@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import SiteShell from "@/components/SiteShell";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
+import Gallery from "@/components/Gallery";
 import FeaturedCocktails from "@/components/FeaturedCocktails";
 
 export const metadata: Metadata = {
@@ -15,6 +16,7 @@ export default function Home() {
     <SiteShell>
       <Hero />
       <About />
+      <Gallery />
       <FeaturedCocktails />
     </SiteShell>
   );

@@ -143,18 +143,18 @@ export const events = [
 ];
 
 export const galleryImages = [
-  "/images/photo-17.png",
-  "/images/photo-22.png",
-  "/images/photo-21.png",
-  "/images/photo-16.png",
-  "/images/photo-6.png",
-  "/images/photo-11.png",
-  "/images/photo-12.png",
-  "/images/photo-19.png",
-  "/images/photo-18.png",
-  "/images/photo-4.png",
-  "/images/photo-8.png",
-  "/images/photo-9.png",
+  { src: "/images/photo-1.png", alt: "Šank i enterijer Caffe Bar Studio" },
+  { src: "/images/photo-8.png", alt: "Salon sa sedištem i dekorom" },
+  { src: "/images/photo-18.png", alt: "Dekorativni zid sa lusterom" },
+  { src: "/images/photo-4.png", alt: "Police sa biljkama i zlatnim osvetljenjem" },
+  { src: "/images/photo-5.png", alt: "STUDIO natpis i zelenilo" },
+  { src: "/images/photo-2.png", alt: "Šank sa koktelima" },
+  { src: "/images/photo-13.png", alt: "Enterijer sa zvezdastim lusterima" },
+  { src: "/images/photo-6.png", alt: "Sečenje sa zlatnim ivicama" },
+  { src: "/images/photo-17.png", alt: "Kafa u Studiju" },
+  { src: "/images/photo-14.png", alt: "Desert u enterijeru Studija" },
+  { src: "/images/photo-15.png", alt: "Espresso koktel na stolu" },
+  { src: "/images/photo-10.png", alt: "STUDIO natpis na zelenoj pozadini" },
 ];
 
 export const navLinks = [

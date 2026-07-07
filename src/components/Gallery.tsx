@@ -1,74 +1,105 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { galleryImages } from "@/lib/data";
 
+const SCROLL_SPEED = 0.9;
+
 export default function Gallery() {
-  const [selected, setSelected] = useState<string | null>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const offsetRef = useRef(0);
+  const frameRef = useRef(0);
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (prefersReducedMotion) return;
+
+    let active = true;
+
+    const tick = () => {
+      if (!active) return;
+
+      const loopWidth = track.scrollWidth / 2;
+      if (loopWidth > 0) {
+        offsetRef.current += SCROLL_SPEED;
+        if (offsetRef.current >= loopWidth) {
+          offsetRef.current -= loopWidth;
+        }
+        track.style.transform = `translate3d(-${offsetRef.current}px, 0, 0)`;
+      }
+
+      frameRef.current = requestAnimationFrame(tick);
+    };
+
+    frameRef.current = requestAnimationFrame(tick);
+
+    return () => {
+      active = false;
+      cancelAnimationFrame(frameRef.current);
+    };
+  }, []);
+
+  const items = [...galleryImages, ...galleryImages];
 
   return (
-    <section id="galerija" className="relative py-24 md:py-32">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="text-center mb-16">
+    <section
+      id="galerija"
+      className="relative py-24 md:py-32 bg-surface border-y border-gold-mid/10"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mb-12">
+        <div className="text-center">
           <span className="tag mb-6">Galerija</span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-[family-name:var(--font-montserrat)] gold-text gold-glow mb-4">
-            Atmosfera Studija
+            Enterijer Studija
           </h2>
           <p className="text-muted max-w-2xl mx-auto">
-            Kokteli, enterijer, večernja atmosfera i dobra energija.
+            Šank, salon, dekor i atmosfera koja čini Studio posebnim mestom u
+            gradu.
           </p>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-          {galleryImages.map((src, i) => (
-            <button
-              key={src}
-              onClick={() => setSelected(src)}
-              className={`relative overflow-hidden rounded-xl group cursor-pointer ${
-                i === 0 ? "col-span-2 row-span-2 aspect-square" : "aspect-square"
-              }`}
-            >
-              <Image
-                src={src}
-                alt={`Studio galerija ${i + 1}`}
-                fill
-                className="object-cover group-hover:scale-110 transition-transform duration-700 brightness-75 group-hover:brightness-100"
-                sizes={
-                  i === 0
-                    ? "(max-width: 768px) 100vw, 50vw"
-                    : "(max-width: 768px) 50vw, 25vw"
-                }
-              />
-              <div className="absolute inset-0 bg-gold-mid/0 group-hover:bg-gold-mid/10 transition-colors duration-500" />
-            </button>
-          ))}
         </div>
       </div>
 
-      {selected && (
+      <div className="relative w-full overflow-hidden">
         <div
-          className="fixed inset-0 z-[100] bg-background/95 flex items-center justify-center p-4"
-          onClick={() => setSelected(null)}
+          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-12 bg-gradient-to-r from-surface to-transparent sm:w-20"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-12 bg-gradient-to-l from-surface to-transparent sm:w-20"
+          aria-hidden
+        />
+
+        <div
+          ref={trackRef}
+          className="flex w-max gap-4 px-4 will-change-transform"
         >
-          <button
-            className="absolute top-6 right-6 text-gold-light text-3xl hover:text-gold-mid transition-colors"
-            onClick={() => setSelected(null)}
-            aria-label="Zatvori"
-          >
-            &times;
-          </button>
-          <div className="relative w-full max-w-4xl aspect-[4/3]">
-            <Image
-              src={selected}
-              alt="Studio galerija"
-              fill
-              className="object-contain"
-              sizes="(max-width: 1024px) 100vw, 80vw"
-            />
-          </div>
+          {items.map((image, i) => (
+            <div
+              key={`${image.src}-${i}`}
+              className="gallery-flicker-item relative h-28 w-44 shrink-0 overflow-hidden rounded-md border border-white/15 sm:h-32 sm:w-52 md:h-36 md:w-60"
+              style={{
+                animationDelay: `${(i % galleryImages.length) * 0.4}s`,
+              }}
+            >
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                className="object-cover"
+                sizes="240px"
+                draggable={false}
+              />
+            </div>
+          ))}
         </div>
-      )}
+      </div>
     </section>
   );
 }
