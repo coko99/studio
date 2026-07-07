@@ -21,7 +21,7 @@ export const MENU_CATEGORY_ORDER = [
 ] as const;
 
 export function sortMenuCategories(categories: MenuCategory[]): MenuCategory[] {
-  const order = new Map(
+  const order = new Map<string, number>(
     MENU_CATEGORY_ORDER.map((name, index) => [name, index])
   );
   return [...categories].sort((a, b) => {
