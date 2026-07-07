@@ -7,7 +7,6 @@ import { galleryImages } from "@/lib/data";
 const PX_PER_MS = 0.055;
 const SLOT_MS = 4500;
 const FADE_RATIO = 0.38;
-const SPOTLIGHT_COUNT = 3;
 
 function spotlightIntensity(slotProgress: number) {
   let wave = 0;
@@ -23,11 +22,25 @@ function spotlightIntensity(slotProgress: number) {
   return wave * wave * (3 - 2 * wave);
 }
 
-function isInSpotlight(sourceIndex: number, activeStart: number, total: number) {
-  for (let i = 0; i < SPOTLIGHT_COUNT; i++) {
-    if (sourceIndex === (activeStart + i) % total) return true;
+function seededRandom(seed: number) {
+  let state = seed >>> 0;
+
+  return () => {
+    state = (state * 1664525 + 1013904223) >>> 0;
+    return state / 0xffffffff;
+  };
+}
+
+function pickRandomSpotlight(slotIndex: number, total: number) {
+  const rng = seededRandom(slotIndex * 9973 + total * 17);
+  const count = 2 + Math.floor(rng() * 2);
+  const picked = new Set<number>();
+
+  while (picked.size < count) {
+    picked.add(Math.floor(rng() * total));
   }
-  return false;
+
+  return picked;
 }
 
 export default function Gallery() {
@@ -53,19 +66,30 @@ export default function Gallery() {
     const resizeObserver = new ResizeObserver(updateLoopWidth);
     resizeObserver.observe(track);
 
+    let cachedSlot = -1;
+    let cachedSpotlight = new Set<number>();
+
+    const getSpotlight = (slotIndex: number, total: number) => {
+      if (cachedSlot !== slotIndex) {
+        cachedSlot = slotIndex;
+        cachedSpotlight = pickRandomSpotlight(slotIndex, total);
+      }
+      return cachedSpotlight;
+    };
+
     const setFlicker = (now: number) => {
       const total = galleryImages.length;
       const slot = now / SLOT_MS;
-      const activeIndex = Math.floor(slot) % total;
-      const slotProgress = slot - Math.floor(slot);
+      const slotIndex = Math.floor(slot);
+      const slotProgress = slot - slotIndex;
+      const activeSet = getSpotlight(slotIndex, total);
+      const intensity = spotlightIntensity(slotProgress);
 
       itemRefs.current.forEach((el, index) => {
         if (!el) return;
 
         const sourceIndex = index % total;
-        const wave = isInSpotlight(sourceIndex, activeIndex, total)
-          ? spotlightIntensity(slotProgress)
-          : 0;
+        const wave = activeSet.has(sourceIndex) ? intensity : 0;
 
         const grayscale = 1 - wave;
         const brightness = 0.32 + wave * 0.68;
