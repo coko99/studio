@@ -5,8 +5,30 @@ import Image from "next/image";
 import { galleryImages } from "@/lib/data";
 
 const PX_PER_MS = 0.055;
-const FLICKER_PERIOD_MS = 5200;
-const FLICKER_STAGGER_MS = 420;
+const SLOT_MS = 4500;
+const FADE_RATIO = 0.38;
+const SPOTLIGHT_COUNT = 3;
+
+function spotlightIntensity(slotProgress: number) {
+  let wave = 0;
+
+  if (slotProgress < FADE_RATIO) {
+    wave = slotProgress / FADE_RATIO;
+  } else if (slotProgress > 1 - FADE_RATIO) {
+    wave = (1 - slotProgress) / FADE_RATIO;
+  } else {
+    wave = 1;
+  }
+
+  return wave * wave * (3 - 2 * wave);
+}
+
+function isInSpotlight(sourceIndex: number, activeStart: number, total: number) {
+  for (let i = 0; i < SPOTLIGHT_COUNT; i++) {
+    if (sourceIndex === (activeStart + i) % total) return true;
+  }
+  return false;
+}
 
 export default function Gallery() {
   const trackRef = useRef<HTMLDivElement>(null);
@@ -32,13 +54,18 @@ export default function Gallery() {
     resizeObserver.observe(track);
 
     const setFlicker = (now: number) => {
+      const total = galleryImages.length;
+      const slot = now / SLOT_MS;
+      const activeIndex = Math.floor(slot) % total;
+      const slotProgress = slot - Math.floor(slot);
+
       itemRefs.current.forEach((el, index) => {
         if (!el) return;
 
-        const phase =
-          ((now + index * FLICKER_STAGGER_MS) % FLICKER_PERIOD_MS) /
-          FLICKER_PERIOD_MS;
-        const wave = (Math.cos(phase * Math.PI * 2) + 1) / 2;
+        const sourceIndex = index % total;
+        const wave = isInSpotlight(sourceIndex, activeIndex, total)
+          ? spotlightIntensity(slotProgress)
+          : 0;
 
         const grayscale = 1 - wave;
         const brightness = 0.32 + wave * 0.68;
