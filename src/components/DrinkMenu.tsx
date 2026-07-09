@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { regularMenuCategories, nightMenuCategories } from "@/lib/data";
 import type { MenuCategory } from "@/lib/menu";
-import {
-  getActiveMenuType,
-} from "@/lib/menu";
+import { isNightMenuActiveWithSchedule } from "@/lib/menu-schedule";
+import type { FeaturedCocktail, MenuScheduleRow } from "@/lib/types/menu-db";
 import CocktailSlider from "@/components/CocktailSlider";
 import {
   MenuCategoryDropdown,
@@ -26,24 +24,42 @@ function MenuItemRow({ name, price }: { name: string; price: string }) {
   );
 }
 
-export default function DrinkMenu() {
-  const [menuType, setMenuType] = useState<MenuType>("regular");
+type DrinkMenuProps = {
+  dayCategories: MenuCategory[];
+  nightCategories: MenuCategory[];
+  featured: FeaturedCocktail[];
+  schedule: MenuScheduleRow;
+  initialMenuType: MenuType;
+};
+
+export default function DrinkMenu({
+  dayCategories,
+  nightCategories,
+  featured,
+  schedule,
+  initialMenuType,
+}: DrinkMenuProps) {
+  const [menuType, setMenuType] = useState<MenuType>(initialMenuType);
   const [active, setActive] = useState(0);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const update = () => setMenuType(getActiveMenuType());
+    const update = () => {
+      setMenuType(
+        isNightMenuActiveWithSchedule(schedule) ? "night" : "regular"
+      );
+    };
     update();
     const interval = setInterval(update, 60_000);
     return () => clearInterval(interval);
-  }, []);
+  }, [schedule]);
 
   useEffect(() => {
     setActive(0);
   }, [menuType]);
 
   const categories: MenuCategory[] =
-    menuType === "night" ? nightMenuCategories : regularMenuCategories;
+    menuType === "night" ? nightCategories : dayCategories;
 
   const filteredCategories = useMemo(() => {
     if (!search.trim()) return null;
@@ -60,7 +76,7 @@ export default function DrinkMenu() {
 
   const displayItems = filteredCategories
     ? filteredCategories
-    : [categories[active]];
+    : [categories[active]].filter(Boolean);
 
   return (
     <section className="pt-28 md:pt-32 pb-24 md:pb-32 bg-background">
@@ -76,7 +92,7 @@ export default function DrinkMenu() {
           </p>
         </div>
 
-        <CocktailSlider menuType={menuType} />
+        <CocktailSlider menuType={menuType} items={featured} />
 
         <div className="relative mb-6 max-w-md mx-auto">
           <input
@@ -103,7 +119,7 @@ export default function DrinkMenu() {
 
         <div className="bg-surface/50 backdrop-blur-sm rounded-2xl border border-gold-mid/10 neon-border overflow-hidden">
           <div className="flex flex-col lg:flex-row min-h-[480px]">
-            {!search.trim() && (
+            {!search.trim() && categories.length > 0 && (
               <aside className="lg:w-52 shrink-0 border-b lg:border-b-0 lg:border-r border-gold-mid/10 bg-surface/30">
                 <div className="lg:sticky lg:top-24 p-3 lg:max-h-[70vh] lg:overflow-y-auto">
                   <p className="hidden lg:block text-xs text-muted uppercase tracking-wider px-3 py-2 mb-1">

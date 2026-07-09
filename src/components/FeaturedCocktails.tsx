@@ -1,8 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { cocktails } from "@/lib/data";
+import type { FeaturedCocktail } from "@/lib/types/menu-db";
 
-export default function FeaturedCocktails() {
+export default function FeaturedCocktails({
+  items,
+}: {
+  items: FeaturedCocktail[];
+}) {
   return (
     <section id="kokteli" className="py-24 md:py-32 bg-surface border-y border-gold-mid/10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -18,9 +22,9 @@ export default function FeaturedCocktails() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {cocktails.map((cocktail) => (
+          {items.map((cocktail) => (
             <div
-              key={cocktail.name}
+              key={cocktail.id ?? cocktail.name}
               className="group bg-surface/80 backdrop-blur-sm rounded-2xl overflow-hidden border border-gold-mid/10 hover:border-gold-mid/30 transition-all duration-500 neon-border"
             >
               <div className="relative h-56 sm:h-64 overflow-hidden">
@@ -42,7 +46,7 @@ export default function FeaturedCocktails() {
                     {cocktail.name}
                   </h3>
                   <span className="text-gold-mid font-semibold">
-                    {cocktail.price}
+                    {cocktail.price ?? cocktail.dayPrice}
                   </span>
                 </div>
                 <p className="text-muted text-sm leading-relaxed">

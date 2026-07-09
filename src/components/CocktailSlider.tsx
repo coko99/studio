@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { featuredSliderCocktails } from "@/lib/data";
+import type { FeaturedCocktail } from "@/lib/types/menu-db";
 
 type MenuType = "regular" | "night";
 
@@ -51,14 +51,20 @@ function CocktailCard({
   );
 }
 
-export default function CocktailSlider({ menuType }: { menuType: MenuType }) {
+export default function CocktailSlider({
+  menuType,
+  items,
+}: {
+  menuType: MenuType;
+  items: FeaturedCocktail[];
+}) {
   const [active, setActive] = useState(0);
   const [visible, setVisible] = useState(3);
   const touchStartX = useRef(0);
   const touchDeltaX = useRef(0);
   const paused = useRef(false);
 
-  const count = featuredSliderCocktails.length;
+  const count = items.length;
   const maxIndex = Math.max(0, count - visible);
 
   const goTo = useCallback(
@@ -84,12 +90,15 @@ export default function CocktailSlider({ menuType }: { menuType: MenuType }) {
   }, [active, maxIndex]);
 
   useEffect(() => {
+    if (count <= 0) return;
     const timer = setInterval(() => {
       if (paused.current) return;
       setActive((prev) => (prev >= maxIndex ? 0 : prev + 1));
     }, INTERVAL_MS);
     return () => clearInterval(timer);
-  }, [maxIndex]);
+  }, [maxIndex, count]);
+
+  if (count === 0) return null;
 
   const onTouchStart = (e: React.TouchEvent) => {
     touchStartX.current = e.touches[0].clientX;
@@ -163,9 +172,9 @@ export default function CocktailSlider({ menuType }: { menuType: MenuType }) {
               transform: `translateX(-${active * slidePercent}%)`,
             }}
           >
-            {featuredSliderCocktails.map((item) => (
+            {items.map((item) => (
               <div
-                key={item.name}
+                key={item.id ?? item.name}
                 className="shrink-0 px-2"
                 style={{ width: `${slidePercent}%` }}
               >

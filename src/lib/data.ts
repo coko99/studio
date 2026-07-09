@@ -19,7 +19,7 @@ export const cocktails = [
     tag: "jak",
     description:
       "Jak, poznat i uvek spreman da pokrene veče. Idealno piće za one koji žele koktel sa karakterom.",
-    image: "/images/photo-3.png",
+    image: "/images/cocktails/long-island.png",
   },
   {
     name: "Sex on the Beach",
@@ -27,7 +27,7 @@ export const cocktails = [
     tag: "voćni",
     description:
       "Voćni, osvežavajući i lagan koktel, savršen za opušteno veče i druženje.",
-    image: "/images/photo-10.png",
+    image: "/images/cocktails/sex-on-the-beach.png",
   },
   {
     name: "Blue Curacao",
@@ -35,7 +35,7 @@ export const cocktails = [
     tag: "premium",
     description:
       "Atraktivan plavi koktel koji vizuelno privlači pažnju i odličan je za fotografije i Instagram story.",
-    image: "/images/photo-21.png",
+    image: "/images/cocktails/blue-curacao.png",
   },
   {
     name: "Aperol Spritz",
@@ -43,7 +43,7 @@ export const cocktails = [
     tag: "osvežavajući",
     description:
       "Elegantno, osvežavajuće piće za lagan početak večeri.",
-    image: "/images/photo-16.png",
+    image: "/images/cocktails/aperol-spritz.png",
   },
   {
     name: "Mojito",
@@ -51,7 +51,7 @@ export const cocktails = [
     tag: "klasik",
     description:
       "Svež klasik sa mentom i limetom, idealan za letnju atmosferu.",
-    image: "/images/photo-16.png",
+    image: "/images/cocktails/mojito.png",
   },
   {
     name: "Mai Tai",
@@ -59,7 +59,7 @@ export const cocktails = [
     tag: "premium",
     description:
       "Tropski koktel bogatog ukusa, dobar za premium predstavljanje na sajtu.",
-    image: "/images/photo-2.png",
+    image: "/images/cocktails/mai-tai.png",
   },
 ];
 
@@ -69,7 +69,7 @@ export const featuredSliderCocktails = [
     tag: "jak",
     description:
       "Jak, poznat i uvek spreman da pokrene veče. Idealno piće za one koji žele koktel sa karakterom.",
-    image: "/images/photo-3.png",
+    image: "/images/cocktails/long-island.png",
     dayPrice: "750 RSD",
     nightPrice: "990 RSD",
   },
@@ -78,7 +78,7 @@ export const featuredSliderCocktails = [
     tag: "voćni",
     description:
       "Voćni, osvežavajući i lagan koktel, savršen za opušteno veče i druženje.",
-    image: "/images/photo-10.png",
+    image: "/images/cocktails/sex-on-the-beach.png",
     dayPrice: "650 RSD",
     nightPrice: "900 RSD",
   },
@@ -87,7 +87,7 @@ export const featuredSliderCocktails = [
     tag: "premium",
     description:
       "Atraktivan plavi koktel koji vizuelno privlači pažnju i odličan je za fotografije.",
-    image: "/images/photo-21.png",
+    image: "/images/cocktails/blue-curacao.png",
     dayPrice: "600 RSD",
     nightPrice: "890 RSD",
   },
@@ -96,7 +96,7 @@ export const featuredSliderCocktails = [
     tag: "osvežavajući",
     description:
       "Elegantno, osvežavajuće piće za lagan početak večeri.",
-    image: "/images/photo-16.png",
+    image: "/images/cocktails/aperol-spritz.png",
     dayPrice: "650 RSD",
     nightPrice: "790 RSD",
   },
@@ -105,7 +105,7 @@ export const featuredSliderCocktails = [
     tag: "klasik",
     description:
       "Svež klasik sa mentom i limetom, idealan za letnju atmosferu.",
-    image: "/images/photo-19.png",
+    image: "/images/cocktails/mojito.png",
     dayPrice: "490 RSD",
     nightPrice: "850 RSD",
   },
